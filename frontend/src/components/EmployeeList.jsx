@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -100,29 +99,37 @@ const EmployeeList = () => {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6 text-center">Employee List</h1>
-      <div className="flex flex-wrap gap-4 mb-4">
-        <input
-          type="text"
-          name="f_Name"
-          placeholder="Search by Name"
-          value={searchParams.f_Name}
-          onChange={(e) => setSearchParams({ ...searchParams, f_Name: e.target.value })}
-          className="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="text"
-          name="f_Email"
-          placeholder="Search by Email"
-          value={searchParams.f_Email}
-          onChange={(e) => setSearchParams({ ...searchParams, f_Email: e.target.value })}
-          className="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <div className="flex justify-between mb-4">
         <button 
-          onClick={() => setCurrentPage(1)}
+          onClick={() => navigate('/createEmployee')}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
         >
-          Search
+          Create Employee
         </button>
+        <div className="flex flex-wrap gap-4">
+          <input
+            type="text"
+            name="f_Name"
+            placeholder="Search by Name"
+            value={searchParams.f_Name}
+            onChange={(e) => setSearchParams({ ...searchParams, f_Name: e.target.value })}
+            className="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            name="f_Email"
+            placeholder="Search by Email"
+            value={searchParams.f_Email}
+            onChange={(e) => setSearchParams({ ...searchParams, f_Email: e.target.value })}
+            className="p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button 
+            onClick={() => setCurrentPage(1)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200"
+          >
+            Search
+          </button>
+        </div>
       </div>
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200">
@@ -150,7 +157,7 @@ const EmployeeList = () => {
           </tr>
         </thead>
         <tbody>
-          {employees.map((employee, index) => (
+          {employees.map((employee) => (
             <tr key={employee._id} className="text-center border-b">
               <td className="py-2 px-4">{employee.f_Id}</td>
               <td className="py-2 px-4">{employee.f_Name}</td>
