@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const loginSchema = new mongoose.Schema({
   f_sno: {
     type: Number,
-    required: true,
     unique: true
   },
   f_userName: {

@@ -1,4 +1,20 @@
 const Employee = require("../models/Employee");
+const multer = require("multer");
+const express = require('express');
+const app = express() ;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "../uploads/"); 
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); 
+  },
+});
+
+const upload = multer({ storage: storage });
 
 exports.getEmployees = async (req, res) => {
   try {
@@ -11,6 +27,7 @@ exports.getEmployees = async (req, res) => {
       f_Course,
       f_Id,
       sort,
+      order, // Add order query param to handle asc/desc sorting
     } = req.query;
 
     const queryObject = {};
@@ -25,14 +42,11 @@ exports.getEmployees = async (req, res) => {
 
     let sortObject = {};
     if (sort) {
-      const sortFields = sort.split(",");
-      sortFields.forEach((field) => {
-        sortObject[field] = 1; // 1 for ascending, -1 for descending
-      });
+      sortObject[sort] = order === 'desc' ? -1 : 1; // Set sorting order based on 'order' parameter
     }
 
     let page = Number(req.query.page) || 1;
-    let limit = Number(req.query.limit) || 2;
+    let limit = Number(req.query.limit) || 4;
     let skip = (page - 1) * limit;
 
     const employees = await Employee.find(queryObject)
@@ -54,10 +68,43 @@ exports.getEmployees = async (req, res) => {
   }
 };
 
+  exports.employeeById = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const employee = await Employee.findById(id);
+  
+      if (!employee) {
+        return res.status(404).json({
+          success: false,
+          message: "Employee not found",
+        });
+      }
+  
+      return res.status(200).json({
+        success: true,
+        employee,
+      });
+  
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: `Server error: ${error.message}`,
+      });
+    }
+  };
 exports.editEmployee = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedEmployee = await Employee.findByIdAndUpdate(id, req.body, {
+    // Combine form data and file
+    const employeeData = { ...req.body };
+    console.log(employeeData) ;
+    if (req.file) {
+      employeeData.f_Image = req.file.path; // Store the file path in employee data
+    }
+    console.log(req.body) ;
+    // Update employee in database
+    const updatedEmployee = await Employee.findByIdAndUpdate(id, employeeData, {
       new: true,
       runValidators: true,
     });
@@ -79,4 +126,5 @@ exports.editEmployee = async (req, res) => {
       message: `Server error: ${error.message}`,
     });
   }
+  
 };

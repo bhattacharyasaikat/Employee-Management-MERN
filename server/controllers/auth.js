@@ -1,17 +1,19 @@
 const User = require("../models/Login");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 require("dotenv").config();
 exports.login = async (req, res) => {
   try {
-    const { f_userName, f_Pwd } = req.body;
-    if (!f_userName || !f_Pwd) {
+    
+    const { username, password } = req.body;
+   
+    if (!username || !password) {
       return res.status(400).json({
         succeess: false,
         message: "All fields are required",
       });
     }
-
+    f_userName = username ;
+    f_Pwd = password ;
     const user = await User.findOne({ f_userName });
 
     // checking user exist or not
@@ -42,7 +44,8 @@ exports.login = async (req, res) => {
       res.cookie("f_userName", f_userName, {
           expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         }) ;
-      //localStorage.setItem("f_userName", f_userName);
+
+    //   localStorage.setItem("f_userName", f_userName);
       //   console.log(`token: ${token}`) ;
 
       return res.status(200).json({

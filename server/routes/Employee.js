@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const { createEmployee } = require("../controllers/createEmployee");
-const {getEmployees, editEmployee} = require("../controllers/getEmployees") ;
+const {getEmployees, editEmployee,employeeById} = require("../controllers/getEmployees") ;
 const {toggleEmployeeStatus} = require("../controllers/toggleEmployeeStatus") ;
 const upload = require("../middlewires/upload");
+const { deleteEmployee } = require("../controllers/deleteEmployee");
 
 // Test route
 router.get("/createEmployeeTest", async (req, res) => {
@@ -15,7 +16,7 @@ router.get("/createEmployeeTest", async (req, res) => {
 });
 
 // Create employee route with file upload
-router.post("/createEmployee", upload.single('img'), async (req, res) => {
+router.post("/createEmployee", upload.single('f_Image'), async (req, res) => {
     try {
         // Check if file was uploaded
         if (!req.file) {
@@ -38,7 +39,8 @@ router.post("/createEmployee", upload.single('img'), async (req, res) => {
 });
 
 router.get("/getEmployees",getEmployees) ;
-
+router.get("/employee/:id",employeeById) ;
 router.patch("/employees/:id/active",toggleEmployeeStatus) ;
-router.put("/employees/:id",editEmployee) ;
+router.put("/employees/:id",upload.single('f_Image'),editEmployee) ;
+router.delete("/deleteEmployee/:id",deleteEmployee) ;
 module.exports = router;

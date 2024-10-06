@@ -2,12 +2,14 @@ const express = require("express") ;
 const app = express() ;
 const database = require("./config/db");
 const path = require('path');
+const cors = require('cors') ;
 
 const PORT = 3000 ;
 const dotenv = require("dotenv");
 app.use(express.json());
 app.use('../uploads', express.static(path.join(__dirname, 'uploads')));
 dotenv.config();
+app.use(cors()) ;
 database.connect() ;
 const userRoutes = require("./routes/User");
 const employeeRoutes = require("./routes/Employee") ;

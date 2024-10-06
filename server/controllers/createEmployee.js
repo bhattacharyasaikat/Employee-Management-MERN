@@ -1,4 +1,4 @@
-const Employee = require('../models/Employee'); // Assuming you have an Employee model
+const Employee = require('../models/Employee'); 
 const { z } = require('zod');
 const employeeSchema = z.object({
     f_Name: z.string().min(1, "Name is required"),

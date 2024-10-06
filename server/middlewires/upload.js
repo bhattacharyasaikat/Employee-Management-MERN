@@ -1,19 +1,25 @@
+
 const multer = require('multer');
 const path = require('path');
 const sanitize = require('sanitize-filename');
-
 const uploadDir = path.join(__dirname, '../uploads/');
 
 const storage = multer.diskStorage({
-  destination: uploadDir,  // Folder to store the uploaded images
+  destination: uploadDir,  
   filename: function (req, file, cb) {
-    const sanitizedFilename = sanitize(file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    cb(null, sanitizedFilename);
+    if (req.body.f_Name) {
+      const sanitizedName = sanitize(req.body.f_Name.replace(/\s+/g, '_').toLowerCase());  
+      const sanitizedFilename = `${sanitizedName}${path.extname(file.originalname)}`;
+      cb(null, sanitizedFilename);
+    } else {
+      const fallbackFilename = sanitize(file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+      cb(null, fallbackFilename);
+    }
   }
 });
 
 function checkFileType(file, cb) {
-  // Allowed extensions
+  
   const filetypes = /jpeg|jpg|png/;
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   const mimetype = filetypes.test(file.mimetype);
@@ -21,7 +27,7 @@ function checkFileType(file, cb) {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb('Error: Images Only!'); 
+    cb('Error: Images Only!');
   }
 }
 
