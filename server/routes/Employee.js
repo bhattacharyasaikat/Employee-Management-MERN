@@ -40,7 +40,7 @@ router.post("/createEmployee", upload.single('f_Image'), async (req, res) => {
 
 router.get("/getEmployees",getEmployees) ;
 router.get("/employee/:id",employeeById) ;
-router.patch("/employees/:id/active",toggleEmployeeStatus) ;
 router.put("/employees/:id",upload.single('f_Image'),editEmployee) ;
+router.put("/toggleStatus/:id",toggleEmployeeStatus)
 router.delete("/deleteEmployee/:id",deleteEmployee) ;
 module.exports = router;

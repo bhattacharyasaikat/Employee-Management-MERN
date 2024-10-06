@@ -3,6 +3,7 @@ const Employee = require("../models/Employee" ) ;
 exports.toggleEmployeeStatus = async(req,res) =>{
     try {
         const { id } = req.params;
+        console.log("toggle hit");
         const employee = await Employee.findById(id);
         if (!employee) {
           return res.status(404).json({ success: false, message: 'Employee not found' });
